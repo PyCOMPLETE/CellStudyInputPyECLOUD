@@ -2,7 +2,7 @@ from __future__ import division
 import numpy as np
 
 import info_on_half_cells as info
-import create_pyecloud_input_2 as cpi
+import create_pyecloud_input as cpi
 
 
 mag_len_dict = info.mag_len_dict
@@ -42,6 +42,7 @@ mag_len_dict_avg['MS2'] = mag_len_dict_avg['MS']/2
 mag_len_dict_avg['MS'] = mag_len_dict_avg['MS']/2
 
 if __name__ == '__main__':
+    # Prints out a latex table of magnets
     magnets = cpi.magnets
 
     devices = (
@@ -57,7 +58,7 @@ if __name__ == '__main__':
 
     for key in devices:
         subdict = mag_len_dict_avg[key]
-        B_multip, B_skew = cpi.get_b_multip(key, 6.5e12)
+        B_multip, B_skew = cpi.get_b_multip(magnets[key], 6.5e12)
         length = mag_len_dict_avg[key]
         if B_skew is None:
             B_skew = '-'

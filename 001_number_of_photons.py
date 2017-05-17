@@ -10,9 +10,8 @@ import LHCMeasurementTools.mystyle as ms
 from RcParams import init_pyplot
 init_pyplot()
 plt.close('all')
-from n_photons import lhc_bending_radius, copper_work_function_eV, \
-    n_photons_meter, spectral_at_energy,\
-    compute_critical_angle
+import n_photons
+from n_photons import lhc_bending_radius, copper_work_function_eV
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-o', help='Output file', type=str)
@@ -38,7 +37,7 @@ ms.sciy()
 sp.grid(True)
 
 xx = np.linspace(1, 12e3, 1e3)*1e9
-yy = n_photons_meter(xx, lhc_bending_radius, copper_work_function_eV)
+yy = n_photons.n_photons_meter(xx, lhc_bending_radius, copper_work_function_eV)
 sp.plot(xx/1e12, yy,'.', label='4.6')
 spt = sp.twinx()
 spt.set_yticks([])
@@ -48,7 +47,7 @@ set_title(sp2,'Ratio of photons above work function')
 sp2.set_xlabel('Energy [TeV]')
 sp2.set_ylabel('Ratio')
 sp2.grid(True)
-yy2 = n_photons_meter(xx, lhc_bending_radius, 0.)
+yy2 = n_photons.n_photons_meter(xx, lhc_bending_radius, 0.)
 ratio = yy/yy2
 sp2.plot(xx/1e12, ratio, '.', color='black')
 
@@ -61,7 +60,7 @@ for energy, color in zip(beam_energies,['b','g','r', 'c', 'm']):
     spt.axvline(energy/1e12, ls='--', label=label, color=color)
 sp2.legend(loc='upper left', bbox_to_anchor=(1,1), title=r'$N_\gamma (E>W_{Cu}) / N_\gamma$')
 
-xx2 = np.loadtxt(os.path.dirname(__file__)+'/nphotons_giovanni.csv', delimiter=',')
+xx2 = np.loadtxt(os.path.dirname(os.path.abspath(__file__))+'/nphotons_giovanni.csv', delimiter=',')
 sp.plot(xx2[:,0]/1e3, xx2[:,1],'.', label='4.4 (GR)')
 sp.legend(loc='upper left', bbox_to_anchor=(1,1), title='$W_{Cu}$ [eV]')
 spt.legend(loc='upper left', bbox_to_anchor=(1,0.6), title='$N_\gamma$ [1e-2]')
@@ -78,13 +77,13 @@ set_title(sp4,'Energy spectrum of radiation')
 sp4.set_ylabel('dP/dE')
 sp4.grid(True)
 for energy_eV in beam_energies:
-    yy_e = spectral_at_energy(xx_e, energy_eV, lhc_bending_radius)
+    yy_e = n_photons.spectral_at_energy(xx_e, energy_eV, lhc_bending_radius)
     label = '%i' % (energy_eV/1e9)
     sp.semilogx(xx_e, yy_e,'.', label=label)
     sp4.semilogx(xx_e, xx_e*yy_e,'.', label=label)
 
-    critical_angle = compute_critical_angle(energy_eV, lhc_bending_radius, copper_work_function_eV)
-    print('Critical angle for %.2e: %.2e' % (energy_eV, critical_angle))
+#    critical_angle = compute_critical_angle(energy_eV, lhc_bending_radius, copper_work_function_eV)
+#    print('Critical angle for %.2e: %.2e' % (energy_eV, critical_angle))
 
 for sp_ in sp,sp4:
     sp_.set_xlabel(r'$E_\gamma$ [eV]')

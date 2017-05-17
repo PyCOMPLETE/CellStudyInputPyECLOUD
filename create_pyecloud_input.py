@@ -1,9 +1,16 @@
 from __future__ import division
 import numpy as np
-from scipy.constants import c
+from scipy.constants import c, e, m_p
 
 import n_photons
 
+def arr(x):
+    return np.array(x, dtype=float)
+
+# R_i is the reflectivity on SR impact
+# R_r is the reflectivity after initial reflection
+# Y_i is the yield per absorbed photon on SR impact
+# Y_r is the yield per absorbed photon after initial reflection
 materials = {}
 materials['Cu co-lam. with sawtooth'] = {
     'R_i' : 10e-2,
@@ -19,9 +26,10 @@ materials['Cu co-lam.'] = {
     'Y_r' : 0.114,
 }
 
-arr = lambda x: np.array(x, dtype=float)
-magnets = {}
 
+# Specify either B and/or B_skew per eV of beam energy
+#   or k and/or k_skew
+magnets = {}
 magnets['MB'] = {
     'B': arr([8.33/7000e9]),
 }
@@ -47,40 +55,33 @@ magnets['MO'] = {
     'k': arr([0, 0, 0, 16]),
 }
 
-keys = magnets.keys()
+def b_rho_photon(energy_eV):
+    energy_tot = energy_eV*e + m_p*c**2
+    p = np.sqrt((energy_tot/c)**2 - m_p**2*c**2)
+    return p/e
 
-# Only ultrarelativistic
-def get_b_multip(key, energy_eV):
-    magnet = magnets[key]
+# Only ultrarelativistic if B/B_skew are given
+# brho = energy[eV] / c
+def get_b_multip(energy_eV, **kwargs):
+    b_multip = None
     b_skew = None
-    if 'B' in magnet and 'B_skew' in magnet:
-        b_multip = magnet['B'].copy()
-        b_skew = magnet['B_skew'].copy()
-    elif 'B' in magnet:
-        b_multip = magnet['B'].copy()
-    elif 'B_skew' in magnet:
-        b_skew = magnet['B_skew'].copy()
-        b_multip = np.zeros_like(b_skew)
-    elif 'k' in magnet and 'k_skew' in magnet:
-        b_multip = np.zeros_like(magnet['k'])
-        b_skew = np.zeros_like(magnet['k_skew'])
+    b_rho = b_rho_photon(energy_eV)
+    if 'B' in kwargs:
+        b_multip = arr(kwargs['B']) * energy_eV
+    if 'B_skew' in kwargs:
+        b_skew = arr(kwargs['B_skew']) * energy_eV
+    if 'k' in kwargs:
+        b_multip = arr(kwargs['k']) * b_rho
+    if 'k_skew' in kwargs:
+        b_skew = arr(kwargs['k_skew']) * b_rho
 
-        for in_arr, out_arr in zip([magnet['k'], magnet['k_skew']], [b_multip, b_skew]):
-            for order, k in enumerate(in_arr):
-                out_arr[order] = k/c
-    elif 'k' in magnet:
-        b_multip = np.zeros_like(magnet['k'])
-        for order, k in enumerate(magnet['k']):
-            b_multip[order] = k/c
-    elif 'k_skew' in magnet:
-        b_multip = np.zeros_like(magnet['k_skew'])
-        b_skew = np.zeros_like(magnet['k_skew'])
-        for order, k in enumerate(magnet['k_skew']):
-            b_skew[order] = k/c
+    if b_multip is None:
+        b_multip = np.zeros_like(b_skew, float)
+    if b_skew is None:
+        b_skew = np.zeros_like(b_multip, float)
 
-    b_multip *= energy_eV
-    if b_skew is not None:
-        b_skew *= energy_eV
+    b_multip = list(b_multip)
+    b_skew = list(b_skew)
 
     return b_multip, b_skew
 
