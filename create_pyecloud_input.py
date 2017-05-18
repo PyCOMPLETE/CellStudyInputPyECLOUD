@@ -31,19 +31,19 @@ materials['Cu co-lam.'] = {
 #   or k and/or k_skew
 magnets = {}
 magnets['MB'] = {
-    'B': arr([8.33/7000e9]),
+    'B_eV': arr([8.33/7000e9]),
 }
 magnets['MQ'] = {
-    'B': arr([0., 12.1/450e9]),
+    'B_eV': arr([0., 12.1/450e9]),
 }
 magnets['Drift'] = {
-    'B': arr([0.]),
+    'B_eV': arr([0.]),
 }
 magnets['MCBH'] = {
-    'B': arr([2.93/7000e9]),
+    'B_eV': arr([2.93/7000e9]),
 }
 magnets['MCBV'] = {
-    'B_skew': arr([2.5/7000e9]),
+    'B_skew_eV': arr([2.5/7000e9]),
 }
 magnets['MS'] = {
     'k': arr([0, 0, 0.07]),
@@ -66,10 +66,10 @@ def get_b_multip(energy_eV, **kwargs):
     b_multip = None
     b_skew = None
     b_rho = b_rho_photon(energy_eV)
-    if 'B' in kwargs:
-        b_multip = arr(kwargs['B']) * energy_eV
-    if 'B_skew' in kwargs:
-        b_skew = arr(kwargs['B_skew']) * energy_eV
+    if 'B_eV' in kwargs:
+        b_multip = arr(kwargs['B_eV']) * energy_eV
+    if 'B_skew_eV' in kwargs:
+        b_skew = arr(kwargs['B_skew_eV']) * energy_eV
     if 'k' in kwargs:
         b_multip = arr(kwargs['k']) * b_rho
     if 'k_skew' in kwargs:
@@ -80,15 +80,10 @@ def get_b_multip(energy_eV, **kwargs):
     if b_skew is None:
         b_skew = np.zeros_like(b_multip, float)
 
-    b_multip = list(b_multip)
-    b_skew = list(b_skew)
+    return list(b_multip), list(b_skew)
 
-    return b_multip, b_skew
-
-def get_k_pe_st_and_r(energy_eV, key):
-    material = materials[key]
+def get_k_pe_st_and_r(energy_eV, **material):
     n_photons_meter = n_photons.n_photons_meter(energy_eV)
-    #material = materials[material_name]
     ri = material['R_i']
     yi = material['Y_i']
     yr = material['Y_r']
