@@ -1,6 +1,7 @@
 from __future__ import division, print_function
 import os
 import re
+import gzip
 
 from twiss_file_utils import TfsLine, HalfCell
 
@@ -8,7 +9,7 @@ from twiss_file_utils import TfsLine, HalfCell
 # Config
 vkicker_is_hkicker = False
 no_ds_in_mag_len_dict = True
-twiss_file_name_tfs = os.path.dirname(os.path.abspath(__file__)) + '/twiss_lhcb1_2.tfs'
+twiss_file_name_tfs = os.path.dirname(os.path.abspath(__file__)) + '/twiss_lhcb1_2.tfs.gz'
 
 re_arc_start = re.compile('(S)\.ARC\.(\d\d)\.B1')
 re_arc_end = re.compile('E\.ARC\.\d\d\.B1')
@@ -29,42 +30,39 @@ hc_name = ''
 arc = None
 half_cell = None
 arc_hc_dict = {}
-tfs_file = open(twiss_file_name_tfs, 'r')
 
 
-for line_n, line in enumerate(iter(tfs_file)):
-    split = line.split()
-    if status == in_prefix:
-        if '$' in line:
-            status = look_for_arc
-    elif status == look_for_arc:
-        if re_arc_start.search(line):
-            status = in_arc
-            arc = ''.join(re_arc_start.search(line).groups())
-            arc_half_cells = []
-            this_hc = HalfCell(None)
-            arc_hc_dict[arc] = arc_half_cells
-    elif status == in_arc:
-        if re_arc_end.search(line) is not None:
-            status = look_for_arc
-        else:
-            this_name = split[0]
-            info = re_sbend_hc.search(this_name)
-            if info is not None:
-                hc_name = info.group(1)
-                if hc_name != this_hc.name:
-                    if 1 < this_hc.length < 53:
-                        print('length smaller than 53', line_n, this_name)
-                    this_hc = HalfCell(hc_name)
-                    arc_half_cells.append(this_hc)
-            this_line = TfsLine(line, vkicker_is_hkicker)
-            this_hc.add_line(this_line)
+with gzip.open(twiss_file_name_tfs, 'r') as tfs_file:
+    for line_n, line in enumerate(iter(tfs_file)):
+        split = line.split()
+        if status == in_prefix:
+            if '$' in line:
+                status = look_for_arc
+        elif status == look_for_arc:
+            if re_arc_start.search(line):
+                status = in_arc
+                arc = ''.join(re_arc_start.search(line).groups())
+                arc_half_cells = []
+                this_hc = HalfCell(None)
+                arc_hc_dict[arc] = arc_half_cells
+        elif status == in_arc:
+            if re_arc_end.search(line) is not None:
+                status = look_for_arc
+            else:
+                this_name = split[0]
+                info = re_sbend_hc.search(this_name)
+                if info is not None:
+                    hc_name = info.group(1)
+                    if hc_name != this_hc.name:
+                        if 1 < this_hc.length < 53:
+                            print('length smaller than 53', line_n, this_name)
+                        this_hc = HalfCell(hc_name)
+                        arc_half_cells.append(this_hc)
+                this_line = TfsLine(line, vkicker_is_hkicker)
+                this_hc.add_line(this_line)
 
-            if this_hc.length > 54:
-                print('length larger than 54:', line_n, this_name)
-
-
-tfs_file.close()
+                if this_hc.length > 54:
+                    print('length larger than 54:', line_n, this_name)
 
 # Find out how often each half cell type appears in the LHC
 type_occurence_dict = {}
