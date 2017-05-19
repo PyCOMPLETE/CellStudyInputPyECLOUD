@@ -56,9 +56,10 @@ if __name__ == '__main__':
         'MO',
     )
 
+    tot_length = 0
     for key in devices:
         subdict = mag_len_dict_avg[key]
-        B_multip, B_skew = cpi.get_b_multip(magnets[key], 6.5e12)
+        B_multip, B_skew = cpi.get_b_multip(6.5e12, **magnets[key])
         length = mag_len_dict_avg[key]
         if B_skew is None:
             B_skew = '-'
@@ -66,3 +67,6 @@ if __name__ == '__main__':
             B_skew = repr([ float('%.2f' % x) for x in B_skew])
         B_multip = repr([ float('%.2f' % x) for x in B_multip])
         print r'%s & %.2f & %s & %s \\' % (key, length, B_multip, B_skew)
+        tot_length += length
+
+    print '\nTotal length: %.2f' % tot_length
