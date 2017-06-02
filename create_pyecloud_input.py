@@ -11,21 +11,70 @@ def arr(x):
 # R_r is the reflectivity after initial reflection
 # Y_i is the yield per absorbed photon on SR impact
 # Y_r is the yield per absorbed photon after initial reflection
-materials = {}
-materials['Cu co-lam. with sawtooth'] = {
-    'R_i' : 10e-2,
-    'Y_i' : 0.053,
-    'R_r' : 82e-2,
-    'Y_r' : 0.114,
+materials_baglin = {}
+materials_baglin['Cu co-lam. with sawtooth'] = {
+    'R_i': 1.8e-2,
+    'Y_i': 0.053,
+    'R_r': 80.9e-2,
+    'Y_r': 0.114,
+    'R_i_corrected': 10e-2,
+    'R_r_corrected': 82e-2,
 }
 
-materials['Cu co-lam.'] = {
-    'R_i' : 82e-2,
+materials_baglin['Cu co-lam.'] = {
+    'R_i' : 80e-2,
     'Y_i' : 0.114,
-    'R_r' : 82e-2,
+    'R_r' : 80e-2,
     'Y_r' : 0.114,
+    'R_i_corrected': 82e-2,
+    'R_r_corrected': 82e-2,
 }
 
+materials_baglin2 = {}
+materials_baglin2['Cu co-lam. with sawtooth'] = {
+    'R_i': 8e-2,
+    'Y_i': 0.011,
+    'R_r': 80.9e-2,
+    'Y_r': 0.114/4.7,
+    'R_i_corrected': 10e-2,
+    'R_r_corrected': 82e-2,
+}
+materials_baglin2['Cu co-lam.'] = {
+    'R_i': 80.9e-2,
+    'Y_i': 0.114/4.7,
+    'R_r': 80.9e-2,
+    'Y_r': 0.114/4.7,
+    'R_i_corrected': 82e-2,
+    'R_r_corrected': 82e-2,
+}
+
+
+materials, materials2 = {}, {}
+
+for old, new in zip([materials_baglin, materials_baglin2], [materials, materials2]):
+    for key, properties in old.iteritems():
+        new[key] = {
+            'R_i' : properties['R_i_corrected'],
+            'Y_i' : properties['Y_i'] * (1-properties['R_i'])/(1-properties['R_i_corrected']),
+            'R_r' : properties['R_r_corrected'],
+            'Y_r' : properties['Y_r'] * (1-properties['R_r'])/(1-properties['R_r_corrected']),
+        }
+
+
+## Old
+#materials['Cu co-lam. with sawtooth'] = {
+#    'R_i' : 10e-2,
+#    'Y_i' : 0.053,
+#    'R_r' : 82e-2,
+#    'Y_r' : 0.114,
+#}
+#
+#materials['Cu co-lam.'] = {
+#    'R_i' : 82e-2,
+#    'Y_i' : 0.114,
+#    'R_r' : 82e-2,
+#    'Y_r' : 0.114,
+#}
 
 # Specify either B and/or B_skew per eV of beam energy
 #   or k and/or k_skew
