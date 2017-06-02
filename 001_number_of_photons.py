@@ -60,17 +60,17 @@ for energy, color in zip(beam_energies,['b','g','r', 'c', 'm']):
     spt.axvline(energy/1e12, ls='--', label=label, color=color)
 sp2.legend(loc='upper left', bbox_to_anchor=(1,1), title=r'$N_\gamma (E>W_{Cu}) / N_\gamma$')
 
-xx2 = np.loadtxt(os.path.dirname(os.path.abspath(__file__))+'/nphotons_giovanni.csv', delimiter=',')
-sp.plot(xx2[:,0]/1e3, xx2[:,1],'.', label='4.4 (GR)')
-sp.legend(loc='upper left', bbox_to_anchor=(1,1), title='$W_{Cu}$ [eV]')
-spt.legend(loc='upper left', bbox_to_anchor=(1,0.6), title='$N_\gamma$ [1e-2]')
+#xx2 = np.loadtxt(os.path.dirname(os.path.abspath(__file__))+'/nphotons_giovanni.csv', delimiter=',')
+#sp.plot(xx2[:,0]/1e3, xx2[:,1],'.', label='4.4 (GR)')
+#sp.legend(loc='upper left', bbox_to_anchor=(1,1), title='$W_{Cu}$ [eV]')
+spt.legend(loc='upper left', bbox_to_anchor=(1,1), title='$N_\gamma$ [1e-2]')
 
 sp = plt.subplot(2,2,3)
 set_title(sp,'Distribution of photons')
 sp.set_ylabel('dn/dE')
 sp.grid(True)
 #xx_e = np.linspace(0.0001,100,1e3)
-xx_e = np.exp(np.linspace(np.log(1e0), np.log(1e2), 1e2))
+xx_e = np.exp(np.linspace(np.log(1e0), np.log(1e3), 1e2))
 
 sp4 = plt.subplot(2,2,4)
 set_title(sp4,'Energy spectrum of radiation')
@@ -79,8 +79,9 @@ sp4.grid(True)
 for energy_eV in beam_energies:
     yy_e = n_photons.spectral_at_energy(xx_e, energy_eV, lhc_bending_radius)
     label = '%i' % (energy_eV/1e9)
-    sp.semilogx(xx_e, yy_e,'.', label=label)
+    sp.loglog(xx_e, yy_e,'.', label=label)
     sp4.semilogx(xx_e, xx_e*yy_e,'.', label=label)
+sp.set_ylim(1e-15,None)
 
 #    critical_angle = compute_critical_angle(energy_eV, lhc_bending_radius, copper_work_function_eV)
 #    print('Critical angle for %.2e: %.2e' % (energy_eV, critical_angle))
