@@ -5,7 +5,7 @@ ROOT = main
 MAIN_BIB = lit.bib
 PDF_LATEX = pdflatex -halt-on-error -file-line-error $(ROOT).tex
 BIBTEX = bibtex $(ROOT).aux
-RERUN = ~/bin/rerun_latex.sh
+RERUN = ./rerun_latex.sh
 TRIM = convert -trim
 
 # Handle epslatex stuff
@@ -21,7 +21,7 @@ all:\
     $(ROOT).pdf
 
 # Makefile Rules
-$(ROOT).pdf : $(TEX_FILES) $(PNG_FILES) $(ROOT).bbl
+$(ROOT).pdf : $(TEX_FILES) $(PNG_FILES) $(MAIN_BIB)
 	$(PDF_LATEX)
 	$(RERUN) "$(ROOT).log" "$(PDF_LATEX)" "$(BIBTEX)"
 	grep 'Warning' $(ROOT).log || true
@@ -41,6 +41,3 @@ plots/distributions.png: ./scripts/001_distributions.py
 #plots/time.png: ./scripts/002_kin_energy_time.py
 #	python2 $< -o $@ --noshow
 #	$(TRIM) $@ $@
-
-$(ROOT).bbl: lit.bib
-	$(BIBTEX)
