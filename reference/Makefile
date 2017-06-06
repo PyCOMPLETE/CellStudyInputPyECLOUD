@@ -26,14 +26,14 @@ $(ROOT).pdf : $(TEX_FILES) $(PNG_FILES) $(MAIN_BIB)
 	$(RERUN) "$(ROOT).log" "$(PDF_LATEX)" "$(BIBTEX)"
 	grep 'Warning' $(ROOT).log || true
 
-plots/n_photons.png: ../001_number_of_photons.py
-	python2 $< -o $@ --noshow
-	$(TRIM) $@ $@
-
-plots/distributions.png: ./scripts/001_distributions.py
-	python2 $< -o $@ --noshow
-	$(TRIM) $@ $@
-
+#plots/n_photons.png: ../001_number_of_photons.py
+#	python2 $< -o $@ --noshow
+#	$(TRIM) $@ $@
+#
+#plots/distributions.png: ./scripts/001_distributions.py
+#	python2 $< -o $@ --noshow
+#	$(TRIM) $@ $@
+#
 #plots/test_module.png: ~/pythonpath/PyECLOUD/test_photoemission.py
 #	python2 $< -o $@ --noshow
 #	$(TRIM) $@ $@

@@ -12,9 +12,12 @@ print 'x = %.2e' % x
 Phi = np.tan(x/R)
 Theta = x/R
 
-print '%.5e %.5e' % (Phi, Theta)
+print 'Phi, Theta: %.5e, %.5e' % (Phi, Theta)
 
-print R*(Phi - Theta)/c
+print 'Path difference %r' % (R*(Phi - Theta)/c)
 
-print 2*r/c
+print 'Time needed to transverse chamber %r' % (2*r/c)
+
+inc_angle_rad = (np.pi/2 - Phi)
+print 'Incident angles relative to normal %r, in degrees %r' % (inc_angle_rad, inc_angle_rad/np.pi*180)
 
