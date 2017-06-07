@@ -14,7 +14,7 @@ while [[ $i -lt 5 ]] && [[ $cont -eq 1 ]] ; do
 		eval $BIBTEX
 		eval $PDF_LATEX
 		cont=1
-		((i+=2))
+		((i++))
 	fi
 
 	if grep -q 'Rerun to get ' ${logfile} || grep -q 'undefined references' $logfile; then
