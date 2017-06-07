@@ -1,5 +1,8 @@
 # A useful makefile for latex
 
+#Title
+TITLE = photoelectrons_in_PyECLOUD.pdf
+
 # Config
 ROOT = main
 MAIN_BIB = lit.bib
@@ -18,22 +21,23 @@ all:\
 	plots/n_photons.png\
 	plots/distributions.png\
 	plots/time.png\
-    $(ROOT).pdf
+	$(TITLE)
 
 # Makefile Rules
-$(ROOT).pdf : $(TEX_FILES) $(PNG_FILES) $(MAIN_BIB)
+$(TITLE) : $(TEX_FILES) $(PNG_FILES) $(MAIN_BIB)
 	$(PDF_LATEX)
 	$(RERUN) "$(ROOT).log" "$(PDF_LATEX)" "$(BIBTEX)"
 	grep 'Warning' $(ROOT).log || true
+	mv $(ROOT).pdf $(TITLE)
 
-plots/n_photons.png: ../001_number_of_photons.py
-	python2 $< -o $@ --noshow
-	$(TRIM) $@ $@
-
-plots/distributions.png: ./scripts/001_distributions.py
-	python2 $< -o $@ --noshow
-	$(TRIM) $@ $@
-
+#plots/n_photons.png: ../001_number_of_photons.py
+#	python2 $< -o $@ --noshow
+#	$(TRIM) $@ $@
+#
+#plots/distributions.png: ./scripts/001_distributions.py
+#	python2 $< -o $@ --noshow
+#	$(TRIM) $@ $@
+#
 #plots/test_module.png: ~/pythonpath/PyECLOUD/test_photoemission.py
 #	python2 $< -o $@ --noshow
 #	$(TRIM) $@ $@
