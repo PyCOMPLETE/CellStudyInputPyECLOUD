@@ -1,5 +1,5 @@
 
-It is explained how the best estimates for the input parameters mentioned in Sec.~\ref{sec:input} are defined based on the previously mentioned papers.
+It is explained how the best estimates for the PyECLOUD input parameters mentioned in Sec.~\ref{sec:input} are defined based on the previously mentioned papers.
 Only some of them take photon induced scrubbing into account.
 The notation used in the following pages, see also Eq.~(\ref{eq:not1}-\ref{eq:yy}):
 \begin{center}
@@ -20,14 +20,14 @@ The notation used in the following pages, see also Eq.~(\ref{eq:not1}-\ref{eq:yy
 
 In case of uniform material properties in the beam pipe, k\_pe\_st is computed as follows:
 \begin{align}
-    \textbf{k\_pe\_st} = n_\gamma \frac{Y}{1-R} = N_\gamma Y^*
+    \textbf{k\_pe\_st} = n_\gamma \frac{Y}{1-R} = n_\gamma Y^*
 \end{align}
 This is because all photons are eventually absorbed, either on direct impact or after an arbitrary number of reflections, and the material properties are uniform.
 \begin{align}
     \textbf{refl\_frac} = \frac{N_r}{N_i+N_r} = \frac{R_iY^*_r}{(1-R_i)Y_i^* + R_iY^*_r}
 \end{align}
-However in the case of the sawtooth configuration in the LHC beam screen, the material properties are different at the where the synchrotron radiation impacts first.
-This means that the reflectivity at this point plays a role, and the number of photons absorbed at the impact point and after initial reflection have to be weighted with the photoelectron yields $Y^*$.
+However in the case of the sawtooth configuration in the LHC beam screen, the material properties are different at the  spot where the synchrotron radiation impacts first.
+This means that number of photons absorbed at the impact point and after initial reflection have to be weighted with the photoelectron yields $Y^*$ and the reflectivity probability.
 \begin{align}
     \textbf{k\_pe\_st} &= N_i + N_r
     \\
@@ -38,7 +38,7 @@ This means that the reflectivity at this point plays a role, and the number of p
 \end{align}
 One simplification is that photons are not reflected back to the sawtooth material, given its relatively small portion relative to the total circumference.
 This corresponds to $R_r=0$.
-Quantitatively, k\_pe\_st and refl\_frac are assessed in Sec.~\ref{sec:parameters}.
+%Quantitatively, k\_pe\_st and refl\_frac are assessed in Sec.~\ref{sec:parameters}.
 
 For \textbf{alimit}, the critical angle of the synchrotron radiation from Eq.~(\ref{eq:crit_angle}) could be used for $\omega = W_\text{Cu}/\hbar$: 0.36~mrad.
 For \textbf{e\_pe\_sigma} and \textbf{e\_pe\_max}, describing the kinetic energy distribution of new electron macroparticles, 5 and 7~eV have been chosen in past simulations.
@@ -68,7 +68,7 @@ The yields in blue were not published but could be retrieved with the simple rel
     \end{tabular}
 \end{center}
 
-The differences between the Cimino and Baglin results can be explained with different "as-received" samples of Cu.
+The differences between the Cimino and Baglin results can at least in parts be explained with different "as-received" samples of Cu, but of course also different measurement techniques may have been used.
 Since only the two Baglin papers include results for sawtooth materials, these should be used for the simulation.
 The reflectivities from the Mahne paper should be used because of the superior measurement apparatus for reflected photons.
 
@@ -113,6 +113,8 @@ Chamber type & $N_i$ & $N_r$ & $N_t$ & $n_\gamma$ & refl\_frac & k\_pe\_st \\ \h
 Cu co-lam. with sawtooth& 1.0e-02 &2.6e-03 &1.3e-02 &1.1e-02 &2.03e-01 &1.39e-04\\
 Cu co-lam.& 4.6e-03 &2.1e-02 &2.6e-02 &1.1e-02 &8.20e-01 &2.81e-04\\
 \end{tabular}
+
+However it should be noted that this alteration is speculative, and should be confirmed with measurements.
 
 
 

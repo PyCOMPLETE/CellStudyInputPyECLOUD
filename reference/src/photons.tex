@@ -24,7 +24,7 @@ The function $S_s$ is an integral over a modified Bessel function.
     \label{eq:s_s}
 \end{align}
 The spectrum is easily transformed from frequency to number of photons with the relation $P(\omega)=\dot{n}\hbar\omega$.
-Integration yields the number of photons above a certain energy, for example the work function of the material of interest.
+Integration yields the number of photons above a certain energy, for example the work function of a material.
 \begin{align}
     \derivative{\dot{n}}{\omega} &= \frac{P_s}{\omega_c} \frac{1}{\hbar\omega}S_s(\frac{\omega}{\omega_c})
     \label{eq:nomega}
@@ -37,7 +37,7 @@ Integration yields the number of photons above a certain energy, for example the
     \cdot
     \underbrace{\int_{\omega_\text{min}/\omega_c}^\infty \text{d}x  \int_x^\infty \text{d}z' K_{5/3}(z')}_{=A(\omega_\text{min}/\omega_c) = A(x_\text{min})}
 \end{align}
-The double integral $A(\omega_\text{min}/\omega_c)$ can be transformed into a single integral.
+The double integral $A(\omega_\text{min}/\omega_c)$ can be transformed to a single integral.
 \begin{align}
     A(x_\text{min}) &= \int_{x_\text{min}}^\infty \text{d}x  \underbrace{\int_x^\infty \text{d}z'\ K_{5/3}(z')}_{=F(x)}
     \\
@@ -49,7 +49,7 @@ The double integral $A(\omega_\text{min}/\omega_c)$ can be transformed into a si
     \\
     &= \int_{x_\text{min}}^\infty \text{d}x\ K_{5/3}(x) (x-x_\text{min})
 \end{align}
-The number of photons per m bend is obtained by applying a factor of $1/c$ to $\dot{n}$.
+The number of photons per m in a dipole with constant field is obtained by applying a factor of $1/c$ to $\dot{n}$.
 \begin{align}
     n_\gamma = \derivative{n}{z} = \frac{\sqrt{3}}{8\pi^2}\frac{e^2\gamma}{\hbar c \epsilon_0 \rho}
     \cdot
@@ -67,7 +67,7 @@ Far above the critical angle, emission of synchrotron radiation is negligible.
 For energies corresponding to the copper work function, the critical angle is about 0.36~mrad.
 
 Figure~\ref{fig:n_photons} shows the properties of some functions that were presented previously.
-It is created with a script found in a python module that is related to this report \cite{cellinput}.
+It is created with a script in the python module that is related to this report \cite{cellinput}.
 \begin{figure}[tbh]
     \centering
     \includegraphics[width=\textwidth]{./plots/n_photons.png}
@@ -75,7 +75,7 @@ It is created with a script found in a python module that is related to this rep
         Top left: Number of photons above the copper work function in the LHC.
         Top right: Ratio of photons above the copper work function.
         Bottom left: Distribution of photons for various beam energies.
-        Bottom right: Energy distribution of the impinging photon.
+        Bottom right: Energy distribution of impinging photons.
     }
     \label{fig:n_photons}
 \end{figure}
