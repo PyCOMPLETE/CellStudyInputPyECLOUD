@@ -12,7 +12,7 @@ madx_key_dict ={
     'DRIFT' :       'Drift',
     'HKICKER':      'MCBH',
     'VKICKER':      'MCBV',
-#    'MULTIPOLE':    'MQ',
+    #'MULTIPOLE':    'MQ',
     'OCTUPOLE':     'MO',
     'QUADRUPOLE':   'MQ',
     'SBEND':        'MB',
@@ -37,9 +37,41 @@ for key, len_occurence_dict in mag_len_dict.iteritems():
     else:
         print('Neglected: %s' % key)
 
+
+typical_dict = info.type_occurence_dict['13R2']['dict']
+typical_dict2 = {}
+
+for key in typical_dict.keys():
+    if key in madx_key_dict:
+        typical_dict2[madx_key_dict[key]] = typical_dict[key]
+
+
 # Alternating focussing and defocussing sextupoles
 mag_len_dict_avg['MS2'] = mag_len_dict_avg['MS']/2
 mag_len_dict_avg['MS'] = mag_len_dict_avg['MS']/2
+
+def format_number(list_, device):
+    if list_ is None:
+        return '-'
+    arr = np.array(list_)
+    if np.all(arr == 0):
+        return '-'
+
+    number = arr[-1]
+    if 1 <= number <= 10:
+        str_ = '%.2f ' % number
+    else:
+        str_ = ('%.2e' % number).replace('e+0', '$\cdot 10^{')+'}$ '
+
+    try:
+        str_ += dev_grad_dict[device]
+    except KeyError:
+        str_ += 'T'
+
+    return str_
+
+
+
 
 if __name__ == '__main__':
     # Prints out a latex table of magnets
@@ -56,17 +88,33 @@ if __name__ == '__main__':
         'MO',
     )
 
+    dev_title_dict = {
+        'Drift' : 'Drift',
+        'MB'    : 'Main Bend (MB)',
+        'MCBH'  : 'Horizontal corrector (MCBH)',
+        'MCBV'  : 'Vertical corrector (MCBV)',
+        'MQ'    : 'Main quadrupole (MQ)',
+        'MS'    : 'Main sextupole (MS)',
+        'MS2'   : 'Main sextupole (MS2)',
+        'MO'    : 'Main octupole (MO)'
+    }
+
+    dev_grad_dict = {
+        'MQ' : 'T/m',
+        'MS' : 'T/m$^2$',
+        'MS2' : 'T/m$^2$',
+        'MO' : 'T/m$^3$',
+    }
+
+
     tot_length = 0
     for key in devices:
         subdict = mag_len_dict_avg[key]
         B_multip, B_skew = cpi.get_b_multip(6.5e12, **magnets[key])
         length = mag_len_dict_avg[key]
-        if B_skew is None:
-            B_skew = '-'
-        else:
-            B_skew = repr([ float('%.2f' % x) for x in B_skew])
-        B_multip = repr([ float('%.2f' % x) for x in B_multip])
-        print r'%s & %.2f & %s & %s \\' % (key, length, B_multip, B_skew)
+        B_skew_str = format_number(B_skew, key)
+        B_multip_str = format_number(B_multip, key)
+        print r'%s & %.2f & %s & %s \\' % (dev_title_dict[key], length, B_multip_str, B_skew_str)
         tot_length += length
 
     print '\nTotal length: %.2f' % tot_length

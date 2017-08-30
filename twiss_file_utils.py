@@ -89,5 +89,6 @@ class HalfCell(object):
 
     def get_s_begin(self):
         return self.lines[0].s_begin
+
     def get_s_end(self):
         return self.lines[-1].s_end

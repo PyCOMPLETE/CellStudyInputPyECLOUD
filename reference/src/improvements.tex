@@ -1,5 +1,6 @@
 
 \subsection{Cosine Theta distribution}
+\label{sec:cosine3D}
 As mentioned in Sec.~\ref{sec:input}, the emission angle of photoelectrons in PyECLOUD is meant to follow a cosine distribution:
 \begin{align}
     \derivative{n}{\Omega} &\propto \cos\theta
@@ -10,9 +11,12 @@ As mentioned in Sec.~\ref{sec:input}, the emission angle of photoelectrons in Py
     \label{eq:angles}
 \end{align}
 In PyECLOUD, the two-dimensional case is implemented even though the buildup process really happens in 3D space.
-This leads to too small angles in average (see Fig.~\ref{fig:distribution}), and is a common error in 2D simulation codes~\cite{angle}.
+On average, this leads to too small angles (see Fig.~\ref{fig:distribution}), and is a common error in 2D simulation codes~\cite{angle}.
 It impacts the buildup simulations because it influences the time necessary for a photoelectron to reach the opposing wall of the chamber, and potentially be absorbed there.
 A branch on GitHub named "angle\_cosine3" changes this behavior.
+%TODO
+%
+%
 
 \begin{figure}[tbh]
     \centering
@@ -27,6 +31,7 @@ A branch on GitHub named "angle\_cosine3" changes this behavior.
 
 
 \subsection{Delayed photoelectron production}
+\label{sec:delay}
 
 In PyECLOUD, photoelectrons are generated in parallel to the beam charge.
 This means that the difference in path length is not considered.
@@ -52,8 +57,11 @@ $x$ is the distance travelled by the photons before the wall is reached.
 \end{align}
 This path difference is negligible as it is much smaller than a time step in the simulation, normally around $10^{-11}$~s.
 
-Furthermore, photons that are absorbed only after (multiple) reflections (note that the reflection coefficient for Copper without sawtooth is larger than 80\%) are delayed with respect to the originating beam charge.
-One reflection in normal direction leads to a delay of $\Delta t = \frac{2r}{c} = 1.48\cdot10^{-10}$~s, insignificant with respect to the bunch spacing of $2.5\cdot10^{-8}$, but longer than a time step in the simulations.
+Furthermore, photons that are absorbed only after (multiple) reflections (note that the reflection coefficient for grazing incident photons on Copper without sawtooth is larger than 80\%) are delayed with respect to the originating beam charge.
+One reflection in normal direction causes to a delay of $\Delta t = \frac{2r}{c} = 1.48\cdot10^{-10}$~s, insignificant with respect to the bunch spacing of $2.5\cdot10^{-8}$, but longer than a time step in the simulations.
+Backward or forward reflections, as indicated in Fig.~\ref{fig:synrad} could however lead to 
+% TODO
+% continuous photoemission
 
 
 \subsection{Energy of new photoelectrons}
@@ -100,6 +108,7 @@ In case additional photoelectrons were created independent of time, or delayed w
 
 
 \subsection{Distribution of photoelectrons in the chamber.}
+\label{sec:photon_cdf}
 
 Another idea would be to simulate the distribution of absorbed photons, and therefore the positions of new electron macroparticles.
 So far, either a cosine squared or a uniform distribution of $\Psi$ in Fig.~\ref{fig:gt} has been used in most simulations.
