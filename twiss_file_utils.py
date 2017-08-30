@@ -50,13 +50,14 @@ class HalfCell(object):
         self.calc_length()
 
     def create_dict(self):
-        self.len_type_dict = {'order':[]}
+        self.len_type_dict = {'order':[], 'length': []}
         self.calc_length()
         total_wo_drift = 0
         for line in self.lines:
             if line.s_diff > 0 and 'DRIFT' not in line.type:
                 total_wo_drift += line.s_diff
                 self.len_type_dict['order'].append(line.type)
+                self.len_type_dict['length'].append(line.s_diff)
                 if line.type in self.len_type_dict:
                     self.len_type_dict[line.type] += line.s_diff
                 else:
@@ -92,3 +93,4 @@ class HalfCell(object):
 
     def get_s_end(self):
         return self.lines[-1].s_end
+

@@ -81,15 +81,30 @@ for arc, arc_half_cells in arc_hc_dict.iteritems():
                     'n': 1, 'cell': hc,
                     'cells': [(arc, hc.name, cell_ctr)]}
 
+def insert_to_dict(Dict, key, length):
+    if key not in Dict:
+        Dict[key] = {}
+    if length not in Dict[key]:
+        Dict[key][length] = 0
+    Dict[key][length] += 1
+
+
 mag_len_dict = {}
+single_element_length_dict = {}
 for arc, arc_half_cells in arc_hc_dict.iteritems():
     for hc in arc_half_cells:
         if not no_ds_in_mag_len_dict or no_ds_in_mag_len_dict and hc.length > 53:
             for key, length in hc.len_type_dict.iteritems():
                 if type(length) is not list:
-                    if key not in mag_len_dict:
-                        mag_len_dict[key] = {}
-                    if length not in mag_len_dict[key]:
-                        mag_len_dict[key][length] = 0
-                    mag_len_dict[key][length] += 1
+                    insert_to_dict(mag_len_dict, key, length)
+                    if key not in ('DRIFT', 'Total_sdiff', 'Total'):
+                        try:
+                            new_length = length / hc.len_type_dict['order'].count(key)
+                        except:
+                            print(key, hc.len_type_dict['order'])
+                            raise
+                        if key == 'QUADRUPOLE' and ( 1.6 < new_length < 1.8):
+                            print(hc.len_type_dict['order'])
+                            exit()
+                        insert_to_dict(single_element_length_dict, key, new_length)
 

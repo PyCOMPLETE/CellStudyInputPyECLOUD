@@ -70,9 +70,6 @@ def format_number(list_, device):
 
     return str_
 
-
-
-
 if __name__ == '__main__':
     # Prints out a latex table of magnets
     magnets = cpi.magnets
@@ -106,15 +103,42 @@ if __name__ == '__main__':
         'MO' : 'T/m$^3$',
     }
 
+    single_element_length_dict = {}
+    for key, subdict in info.single_element_length_dict.iteritems():
+        ordered = sorted(subdict.keys(), key=lambda x: subdict[x])
+        print key, ordered[:2]
+        try:
+            single_element_length_dict[madx_key_dict[key]] = ordered[0]
+        except:
+            pass
+    single_element_length_dict['MS2'] = single_element_length_dict['MS']
+    single_element_length_dict['Drift'] = '-'
 
+    print('\n')
+    leader = ' '*3*4
     tot_length = 0
     for key in devices:
         subdict = mag_len_dict_avg[key]
         B_multip, B_skew = cpi.get_b_multip(6.5e12, **magnets[key])
         length = mag_len_dict_avg[key]
+        try:
+            single_element_length = '%.2f' % single_element_length_dict[key]
+        except (KeyError, TypeError):
+            single_element_length = '-'
         B_skew_str = format_number(B_skew, key)
         B_multip_str = format_number(B_multip, key)
-        print r'%s & %.2f & %s & %s \\' % (dev_title_dict[key], length, B_multip_str, B_skew_str)
+
+        if B_multip_str == '-':
+            if B_skew_str != '-':
+                B_str = B_skew_str + ' (skew)'
+            else:
+                B_str = '-'
+        elif B_skew_str == '-':
+            B_str = B_multip_str
+        print leader + r'%s & %s & %.2f & %s \\' % (dev_title_dict[key], single_element_length, length, B_str)
         tot_length += length
 
     print '\nTotal length: %.2f' % tot_length
+
+
+
