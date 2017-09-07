@@ -108,7 +108,7 @@ if __name__ == '__main__':
         ordered = sorted(subdict.keys(), key=lambda x: subdict[x])
         print key, ordered[:2]
         try:
-            single_element_length_dict[madx_key_dict[key]] = ordered[0]
+            single_element_length_dict[madx_key_dict[key]] = max(subdict.keys())
         except:
             pass
     single_element_length_dict['MS2'] = single_element_length_dict['MS']

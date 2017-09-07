@@ -66,8 +66,10 @@ with gzip.open(twiss_file_name_tfs, 'r') as tfs_file:
 
 # Find out how often each half cell type appears in the LHC
 type_occurence_dict = {}
+all_hcs = []
 for arc, arc_half_cells in arc_hc_dict.iteritems():
     for cell_ctr, hc in enumerate(arc_half_cells):
+        all_hcs.append(hc)
         hc.create_dict()
         hc.round_dict(precision=2)
         for key, subdict in type_occurence_dict.iteritems():
@@ -97,14 +99,18 @@ for arc, arc_half_cells in arc_hc_dict.iteritems():
             for key, length in hc.len_type_dict.iteritems():
                 if type(length) is not list:
                     insert_to_dict(mag_len_dict, key, length)
-                    if key not in ('DRIFT', 'Total_sdiff', 'Total'):
-                        try:
-                            new_length = length / hc.len_type_dict['order'].count(key)
-                        except:
-                            print(key, hc.len_type_dict['order'])
-                            raise
-                        if key == 'QUADRUPOLE' and ( 1.6 < new_length < 1.8):
-                            print(hc.len_type_dict['order'])
-                            exit()
-                        insert_to_dict(single_element_length_dict, key, new_length)
+                    #if key not in ('DRIFT', 'Total_sdiff', 'Total'):
+                    #    try:
+                    #        new_length = length / hc.len_type_dict['order'].count(key)
+                    #    except:
+                    #        print(key, hc.len_type_dict['order'])
+                    #        raise
+                    #    insert_to_dict(single_element_length_dict, key, new_length)
+
+for cell in all_hcs:
+    lengths = cell.len_type_dict['length']
+    types = cell.len_type_dict['order']
+    for type_, length in zip(types, lengths):
+        length = round(length, 2)
+        insert_to_dict(single_element_length_dict, type_, length)
 
