@@ -11,6 +11,7 @@ def arr(x):
 # R_r is the reflectivity after initial reflection
 # Y_i is the yield per absorbed photon on SR impact
 # Y_r is the yield per absorbed photon after initial reflection
+
 materials_baglin = {}
 materials_baglin['Cu co-lam. with sawtooth'] = {
     'R_i': 1.8e-2,
@@ -49,7 +50,8 @@ materials_baglin2['Cu co-lam.'] = {
 }
 
 
-materials, materials2 = {}, {}
+materials = conservative = {}
+materials2 = optimistic = {}
 
 for old, new in zip([materials_baglin, materials_baglin2], [materials, materials2]):
     for key, properties in old.iteritems():
@@ -130,17 +132,35 @@ def get_b_multip(energy_eV, **kwargs):
         b_skew = np.zeros_like(b_multip, float)
 
     return list(b_multip), list(b_skew)
+    
 
-def get_k_pe_st_and_r(energy_eV, **material):
+def get_complete_photoemission_info(energy_eV, R_i, Y_i, Y_r, **kwargs): 
     n_photons_meter = n_photons.n_photons_meter(energy_eV)
-    ri = material['R_i']
-    yi = material['Y_i']
-    yr = material['Y_r']
+    ri = R_i
+    yi = Y_i
+    yr = Y_r
     ni = (1-ri)*yi
     nr = ri*yr
     nt = ni+nr
     r = nr/nt
-    k_pe_st = n_photons_meter*nt
+    k_pe_st = n_photons_meter*nt  
+    
+    dict_out = {
+        'Ri': ri,
+        'Yi_star': yi,
+        'Yr_star': yr, 
+        'n_gmamma':n_photons_meter,
+        'Ni': ni,
+        'Nr': nr,
+        'Nt': nt,   
+        'refl_frac':r,     
+        'k_pe_st': k_pe_st}
+        
+    return dict_out
 
-    return k_pe_st, r
+
+def get_k_pe_st_and_r(energy_eV, R_i, Y_i, Y_r, **kwargs):
+    
+    dict_out = get_complete_photoemission_info(energy_eV, R_i, Y_i, Y_r, **kwargs)
+    return dict_out['k_pe_st'], dict_out['refl_frac']
 

@@ -7,8 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import LHCMeasurementTools.mystyle as ms
-from RcParams import init_pyplot
-init_pyplot()
+#~ from RcParams import init_pyplot
+#~ init_pyplot()
 plt.close('all')
 import n_photons
 from n_photons import lhc_bending_radius, copper_work_function_eV
