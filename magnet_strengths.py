@@ -28,6 +28,7 @@ magnets['MS2'] = {
     'k': arr([0, 0, -0.12]),
 }
 magnets['MO'] = {
-    'k': arr([0, 0, 0, 16]),
+    'B_eV': arr([0, 0, 0, 6.31e4/7e12]), # design report: max field
+    # old value of k = 16 was probably incorrect
 }
 
