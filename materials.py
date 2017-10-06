@@ -1,10 +1,16 @@
 from __future__ import division
 
+# General definitions used in 'materials'
+# R_i is the reflectivity on SR impact
+# R_r is the reflectivity after initial reflection
+# Y_i is the yield per absorbed photon on SR impact
+# Y_r is the yield per absorbed photon after initial reflection
+
 # Baglin 1998
 #Photoelectron yield and photon reflectivity from
 #candidate LHC vacuum chamber materials with
 #implications to the vacuum chamber design
-#
+
 # No photon scrubbing taken into account
 
 materials_baglin = {}
@@ -66,17 +72,33 @@ corrected_reflectivities = {
 
 # For conservative and optimistic estimate, adjust the yields from
 # the two Baglin papers by those from the Mahne papers.
-conservative = materials ={}
-optimistic = materials2 = {}
+conservative = materials ={
+    'Cu co-lam. with sawtooth': {
+        'R_i': refl_sawtooth_corrected,
+        'R_r': refl_smooth_corrected,
+        'Y_i': materials_baglin['Cu co-lam. with sawtooth']['Y_i'] * (1- materials_baglin['Cu co-lam. with sawtooth']['R_i']) / (1-refl_sawtooth_corrected),
+        'Y_r': materials_baglin['Cu co-lam. with sawtooth']['Y_r'] * (1- materials_baglin['Cu co-lam. with sawtooth']['R_r']) / (1-refl_smooth_corrected),
+    },
+    'Cu co-lam.': {
+        'R_i': refl_smooth_corrected,
+        'R_r': refl_smooth_corrected,
+        'Y_i': materials_baglin['Cu co-lam. with sawtooth']['Y_i'] * (1- materials_baglin['Cu co-lam. with sawtooth']['R_i']) / (1-refl_smooth_corrected),
+        'Y_r': materials_baglin['Cu co-lam. with sawtooth']['Y_r'] * (1- materials_baglin['Cu co-lam. with sawtooth']['R_r']) / (1-refl_smooth_corrected),
+    },
+}
 
-for baglin_material, corrected_material in [
-    (materials_baglin, conservative),
-    (materials_baglin2, optimistic),
-]:
-    for material_type in ('Cu co-lam. with sawtooth', 'Cu co-lam.'):
-        corrected_material[material_type] = {}
-        r_i = corrected_material[material_type]['R_i'] = corrected_reflectivities[material_type]['R_i']
-        r_r = corrected_material[material_type]['R_r'] = corrected_reflectivities[material_type]['R_r']
-        corrected_material[material_type]['Y_i'] = baglin_material[material_type]['Y_i']*(1-baglin_material[material_type]['R_i'])/(1-r_i)
-        corrected_material[material_type]['Y_r'] = baglin_material[material_type]['Y_r']*(1-baglin_material[material_type]['R_r'])/(1-r_r)
+optimistic = materials2 = {
+    'Cu co-lam. with sawtooth': {
+        'R_i': refl_sawtooth_corrected,
+        'R_r': refl_smooth_corrected,
+        'Y_i': materials_baglin2['Cu co-lam. with sawtooth']['Y_i'] * (1- materials_baglin2['Cu co-lam. with sawtooth']['R_i']) / (1-refl_sawtooth_corrected),
+        'Y_r': materials_baglin2['Cu co-lam. with sawtooth']['Y_r'] * (1- materials_baglin2['Cu co-lam. with sawtooth']['R_r']) / (1-refl_smooth_corrected),
+    },
+    'Cu co-lam.': {
+        'R_i': refl_smooth_corrected,
+        'R_r': refl_smooth_corrected,
+        'Y_i': materials_baglin2['Cu co-lam. with sawtooth']['Y_i'] * (1- materials_baglin2['Cu co-lam. with sawtooth']['R_i']) / (1-refl_smooth_corrected),
+        'Y_r': materials_baglin2['Cu co-lam. with sawtooth']['Y_r'] * (1- materials_baglin2['Cu co-lam. with sawtooth']['R_r']) / (1-refl_smooth_corrected),
+    },
+}
 

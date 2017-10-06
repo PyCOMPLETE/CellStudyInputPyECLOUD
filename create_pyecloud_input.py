@@ -4,7 +4,7 @@ from scipy.constants import c, e, m_p
 
 import n_photons
 
-# Backward compatibility
+# Pull these names to the namespace for backward compatibility
 from materials import materials, materials2, \
     materials_baglin, materials_baglin2, \
     conservative, optimistic
@@ -13,31 +13,24 @@ from magnet_strengths import magnets
 def arr(x):
     return np.array(x, dtype=float)
 
-# General definitions used in 'materials'
-# R_i is the reflectivity on SR impact
-# R_r is the reflectivity after initial reflection
-# Y_i is the yield per absorbed photon on SR impact
-# Y_r is the yield per absorbed photon after initial reflection
-
-def b_rho_photon(energy_eV):
-    energy_tot = energy_eV*e + m_p*c**2
-    p = np.sqrt((energy_tot/c)**2 - m_p**2*c**2)
-    return p/e
+def b_rho_proton(energy_eV, m=m_p, q=e):
+    energy_tot = energy_eV*e + m*c**2
+    p = np.sqrt((energy_tot/c)**2 - m**2*c**2)
+    return p/q
 
 # Only ultrarelativistic if B/B_skew are given
-# brho = energy[eV] / c
-def get_b_multip(energy_eV, **kwargs):
+def get_b_multip(energy_eV, B_eV=None, B_skew_eV=None, k=None, k_skew=None, **kwargs):
     b_multip = None
     b_skew = None
-    b_rho = b_rho_photon(energy_eV)
-    if 'B_eV' in kwargs:
-        b_multip = arr(kwargs['B_eV']) * energy_eV
-    if 'B_skew_eV' in kwargs:
-        b_skew = arr(kwargs['B_skew_eV']) * energy_eV
-    if 'k' in kwargs:
-        b_multip = arr(kwargs['k']) * b_rho
-    if 'k_skew' in kwargs:
-        b_skew = arr(kwargs['k_skew']) * b_rho
+    b_rho = b_rho_proton(energy_eV)
+    if B_eV is not None:
+        b_multip = arr(B_eV) * energy_eV
+    if B_skew_eV is not None:
+        b_skew = arr(B_skew_eV) * energy_eV
+    if k is not None:
+        b_multip = arr(k) * b_rho
+    if k_skew is not None:
+        b_skew = arr(k_skew) * b_rho
 
     if b_multip is None:
         b_multip = np.zeros_like(b_skew, float)
