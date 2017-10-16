@@ -1,12 +1,18 @@
-How to use:
+Main functionality:
 import create_pyecloud_input
 
 - call get_b_multip to obtain the B_multip and B_skew input parameters for PyECLOUD.
-	B per eV or B skew per eV have to be specified as keyword arguments B_eV, B_skew_eV
+	B per eV or B skew per eV have to be specified as keyword arguments B_eV, B_skew_eV.
 	Alternatively, k or k_skew can be specified as keyword arguments.
 
 - call get_k_pe_st_and_r to obtain the k_pe_st and refl_frac input parameters for PyECLOUD
-	R_i has to be specified for the reflectivity on impact
-	Y_i is the electron yield per absorbed photon on impact
-	Y_r is the electron yield per absorbed photon after initial reflection
+	The number of photons above the work function is calculated from the beam energy in eV.
+	R_i has to be specified for the reflectivity on impact.
+	Y_i is the electron yield per absorbed photon on impact.
+	Y_r is the electron yield per absorbed photon after initial reflection.
 
+- In materials.py, the conservative and optimistic estimates are given in nested dictionaries.
+- In magnet_strengths.py, some typical values for magnetic configurations are given.
+- The script length_of_elements.py spits out the average cryogenic lengths of magnetic elements in the cryogenic cells of the LHC.
+- It relies on parsing the file 'twiss_lhcb1_2.tfs.gz'. This piece of code may be difficult to understand.
+- The file n_photons.py implements all necessary formulas to compute the number of photons emitted per proton and per meter.
